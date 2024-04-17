@@ -1,0 +1,5 @@
+/vendor/
+/TODO
+/.editorconfig
+/*.cache
+/composer.lock

@@ -1,0 +1,22 @@
+{
+    "name": "madbyad/mpl-mysql",
+    "description": "A PHP library to provide a simple interface to communicate with a mysql database",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "MadByAd\\MPLMySQL\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "MadByAd",
+            "email": "adityaaw84@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
