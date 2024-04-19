@@ -2,6 +2,7 @@
     <testsuites>
         <testsuite name="mysql">
             <file>tests/ConnectionTest.php</file>
+            <file>tests/QueryTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

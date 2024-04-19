@@ -109,7 +109,7 @@ class MySQL
      * @var mysqli
      */
 
-    private static $default_connection = null;
+    private static $defaultConnection = null;
 
     /**
      * The mysqli connection
@@ -135,8 +135,8 @@ class MySQL
     public function __construct(string $hostname = null, string $username = null, string $password = null, string $database = null, int $port = null)
     {
 
-        if($hostname == null && $username == null && $password == null && $database == null && $port == null && self::$default_connection != null) {
-            $this->connection = self::$default_connection;
+        if($hostname == null && $username == null && $password == null && $database == null && $port == null && self::$defaultConnection != null) {
+            $this->connection = self::$defaultConnection;
             return;
         }
 
@@ -197,7 +197,7 @@ class MySQL
     {
 
         ob_start();
-        self::$default_connection = mysqli_connect($hostname, $username, $password, $database, $port);
+        self::$defaultConnection = mysqli_connect($hostname, $username, $password, $database, $port);
         $warning = ob_get_clean();
 
         if(!empty($warning)) {
@@ -242,7 +242,7 @@ class MySQL
 
     public static function getDefaultConnection()
     {
-        return self::$default_connection;
+        return self::$defaultConnection;
     }
 
 }
