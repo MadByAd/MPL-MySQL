@@ -51,18 +51,20 @@ class MySQLQuery
     /**
      * Construct a new query
      * 
-     * @param string      $query      The query
-     * @param mysqli|null $connection The connection, if null then it will use
-     *                                the default connection on the MySQL class
+     * @param string      $query            The query
+     * @param mysqli|MySQL|null $connection The connection, if null then it will use
+     *                                      the default connection on the MySQL class
      * 
      * @throws MySQLNoConnectionException If no connection is supplied
      */
 
-    public function __construct(string $query, mysqli|null $connection = null)
+    public function __construct(string $query, mysqli|MySQL|null $connection = null)
     {
         
         if($connection == null) {
             $this->connection = MySQL::getDefaultConnection();
+        } elseif($connection instanceof MySQL) {
+            $this->connection = $connection->getConnection();
         } else {
             $this->connection = $connection;
         }

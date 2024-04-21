@@ -33,7 +33,7 @@ class MySQLCRUD
      * @param string $table      The table name
      * @param array  $columns    The columns to be inserted with data
      * @param array  $values     The values for the columns
-     * @param mysqli $connection The mysqli connection if null then it will use the default connection
+     * @param mysqli|MySQL|null $connection The mysqli connection if null then it will use the default connection
      * 
      * @return void
      * 
@@ -48,7 +48,7 @@ class MySQLCRUD
         string $table,
         array $columns,
         array $values,
-        mysqli $connection = null
+        mysqli|MySQL|null $connection = null
     ) {
         
         if($connection == null) {
@@ -85,7 +85,7 @@ class MySQLCRUD
      *                             * `orderBy` order the rows by a column
      *                             * `orderType` either order the rows by `ascending` or
      *                               `descending` (can also use `asc`, `desc`, `a`, `d`)
-     * @param mysqli $connection   The mysqli connection if null then it will use the default connection
+     * @param mysqli|MySQL|null $connection   The mysqli connection if null then it will use the default connection
      * 
      * @return array The readed / selected rows 
      * 
@@ -102,7 +102,7 @@ class MySQLCRUD
         array $condition = null,
         array $values = null,
         array $readSettings = null,
-        mysqli $connection = null
+        mysqli|MySQL|null $connection = null
     ) {
 
         if($condition != null) {
@@ -184,7 +184,9 @@ class MySQLCRUD
      * @param array  $columnValues    The new values for the updated column
      * @param array  $condition       The condition on which column to be update
      * @param array  $conditionValues The values which will be binded to the condition
-     * @param mysqli $connection      The mysqli connection if null then it will use the default connection
+     * @param mysqli|MySQL|null $connection      The mysqli connection if null then it will use the default connection
+     * 
+     * @return void
      * 
      * @throws MySQLNoConnectionException       If no connection is supplied
      * @throws MySQLQueryFailToExecuteException if failed to execute the query
@@ -193,8 +195,14 @@ class MySQLCRUD
      *                                          the number of parameters in the prepared query
      */
 
-    public static function update(string $table, array $columns, array $columnValues, array $condition = null, array $conditionValues = null, mysqli $connection = null)
-    {
+    public static function update(
+        string $table,
+        array $columns,
+        array $columnValues,
+        array $condition = null,
+        array $conditionValues = null,
+        mysqli|MySQL|null $connection = null
+    ) {
 
         $columnString = implode(",", $columns);
         
@@ -231,7 +239,9 @@ class MySQLCRUD
      * @param string $table      The table
      * @param array  $condition  The condition on which data should be deleted
      * @param array  $values     The values which will be binded to the condition
-     * @param mysqli $connection The mysqli connection if null then it will use the default connection
+     * @param mysqli|MySQL|null $connection The mysqli connection if null then it will use the default connection
+     * 
+     * @return void
      * 
      * @throws MySQLNoConnectionException       If no connection is supplied
      * @throws MySQLQueryFailToExecuteException if failed to execute the query
@@ -240,8 +250,12 @@ class MySQLCRUD
      *                                          the number of parameters in the prepared query
      */
 
-    public static function delete(string $table, array $condition = null, array $values = null, mysqli $connection = null)
-    {
+    public static function delete(
+        string $table,
+        array $condition = null,
+        array $values = null,
+        mysqli|MySQL|null $connection = null
+    ) {
 
         if($condition != null) {
             foreach($condition as $index => $cond) {

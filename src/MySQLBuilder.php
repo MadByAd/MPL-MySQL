@@ -210,16 +210,18 @@ class MySQLBuilder
     /**
      * Construct a new mysql builder
      * 
-     * @param mysqli $connection The mysql connection if null then it will use
-     *                           the default connection on the MySQL class
+     * @param mysqli|MySQL|null $connection The mysql connection if null then it will use
+     *                                      the default connection on the MySQL class
      * 
      * @throws MySQLNoConnectionException If no connection is supplied
      */
     
-    public function __construct(mysqli $connection = null)
+    public function __construct(mysqli|MySQL|null $connection = null)
     {
         if($connection == null) {
             $this->connection = MySQL::getDefaultConnection();
+        } elseif ($connection instanceof MySQL) {
+            $this->connection = $connection->getConnection();
         } else {
             $this->connection = $connection;
         }
