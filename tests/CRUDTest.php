@@ -16,9 +16,9 @@ final class CRUDTest extends TestCase
         
         MySQL::setDefaultConnection("localhost", "root", "", "test", 3306);
 
-        MySQLCRUD::create("user", ["name", "password", "description", "number"], ["Adit", "12345", "Hello World!", 15]);
-        MySQLCRUD::create("user", ["name", "password", "description", "number"], ["Budi", "54321", "Halo Dunia!", 51]);
-        MySQLCRUD::create("user", ["name", "password", "description", "number"], ["JOKO", "09876", "PPPPPPPPP", 99]);
+        MySQLCRUD::create("test_user", ["name", "password", "description", "number"], ["Adit", "12345", "Hello World!", 15]);
+        MySQLCRUD::create("test_user", ["name", "password", "description", "number"], ["Budi", "54321", "Halo Dunia!", 51]);
+        MySQLCRUD::create("test_user", ["name", "password", "description", "number"], ["JOKO", "09876", "PPPPPPPPP", 99]);
 
         $array = [
             0 => [
@@ -41,7 +41,7 @@ final class CRUDTest extends TestCase
             ],
         ];
 
-        $this->assertSame($array, MySQLCRUD::read("user"));
+        $this->assertSame($array, MySQLCRUD::read("test_user"));
 
         $array2 = [
             0 => [
@@ -50,7 +50,7 @@ final class CRUDTest extends TestCase
             ],
         ];
 
-        $this->assertSame($array2, MySQLCRUD::read("user", ["name", "password"], ["name = ?"], ["Adit"]));
+        $this->assertSame($array2, MySQLCRUD::read("test_user", ["name", "password"], ["name = ?"], ["Adit"]));
 
         $array3 = [
             0 => [
@@ -73,7 +73,7 @@ final class CRUDTest extends TestCase
             ],
         ];
 
-        $this->assertSame($array3, MySQLCRUD::read("user", [], [], [], [
+        $this->assertSame($array3, MySQLCRUD::read("test_user", [], [], [], [
             "orderBy" => "number",
             "orderType" => "descending",
         ]));
@@ -91,7 +91,7 @@ final class CRUDTest extends TestCase
 
         $newDescription = "Lorem Ipsum Dolor Sit Amet Consectecture Edipsing Elit";
 
-        MySQLCRUD::update("user", ["description = ?"], [$newDescription], ["number = ?"], [$number]);
+        MySQLCRUD::update("test_user", ["description = ?"], [$newDescription], ["number = ?"], [$number]);
 
         $array = [
             0 => [
@@ -114,7 +114,7 @@ final class CRUDTest extends TestCase
             ],
         ];
 
-        $this->assertSame($array, MySQLCRUD::read("user"));
+        $this->assertSame($array, MySQLCRUD::read("test_user"));
 
     }
 
@@ -125,7 +125,7 @@ final class CRUDTest extends TestCase
     public function testDeleteData()
     {
 
-        MySQLCRUD::delete("user", ["name = ?"], ["JOKO"]);
+        MySQLCRUD::delete("test_user", ["name = ?"], ["JOKO"]);
 
         $array = [
             0 => [
@@ -142,11 +142,11 @@ final class CRUDTest extends TestCase
             ],
         ];
 
-        $this->assertSame($array, MySQLCRUD::read("user"));
+        $this->assertSame($array, MySQLCRUD::read("test_user"));
 
-        MySQLCRUD::delete("user");
+        MySQLCRUD::delete("test_user");
 
-        $this->assertSame([], MySQLCRUD::read("user"));
+        $this->assertSame([], MySQLCRUD::read("test_user"));
 
     }
 

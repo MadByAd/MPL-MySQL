@@ -19,7 +19,7 @@ final class QueryTest extends TestCase
         
         MySQL::setDefaultConnection("localhost", "root", "", "test", 3306);
 
-        $query = new MySQLQuery("INSERT INTO user (name, password, description, number) VALUES (?,?,?,?)");
+        $query = new MySQLQuery("INSERT INTO test_user (name, password, description, number) VALUES (?,?,?,?)");
         $query->bind("Adit", "12345");
         $query->execute();
 
@@ -32,19 +32,19 @@ final class QueryTest extends TestCase
     public function testExecutingInsertAndSelectQuery()
     {
 
-        $query = new MySQLQuery("INSERT INTO user (name, password, description, number) VALUES (?,?,?,?)");
+        $query = new MySQLQuery("INSERT INTO test_user (name, password, description, number) VALUES (?,?,?,?)");
         $query->bind("Adit", "12345", "Hello World!", 15);
         $query->execute();
 
-        $query = new MySQLQuery("INSERT INTO user (name, password, description, number) VALUES (?,?,?,?)");
+        $query = new MySQLQuery("INSERT INTO test_user (name, password, description, number) VALUES (?,?,?,?)");
         $query->bind("Budi", "54321", "Halo Dunia!", 51);
         $query->execute();
 
-        $query = new MySQLQuery("INSERT INTO user (name, password, description, number) VALUES (?,?,?,?)");
+        $query = new MySQLQuery("INSERT INTO test_user (name, password, description, number) VALUES (?,?,?,?)");
         $query->bind("JOKO", "09876", "PPPPPPPPP", 99);
         $query->execute();
 
-        $query = new MySQLQuery("SELECT * FROM user");
+        $query = new MySQLQuery("SELECT * FROM test_user");
         $query->execute();
         $result = $query->result();
 
@@ -82,7 +82,7 @@ final class QueryTest extends TestCase
 
         $this->expectException(MySQLQueryFailToExecuteException::class);
 
-        $query = new MySQLQuery("INSERT INTO user (name, password, description, number) VALUES (?,?,?,?)");
+        $query = new MySQLQuery("INSERT INTO test_user (name, password, description, number) VALUES (?,?,?,?)");
         $query->bind("Adit", "12345", "Hello World!", 15);
         $query->execute();
 
@@ -95,11 +95,11 @@ final class QueryTest extends TestCase
     public function testExecutingUpdateQuery()
     {
 
-        $query = new MySQLQuery("UPDATE user SET description = ? WHERE number = ?");
+        $query = new MySQLQuery("UPDATE test_user SET description = ? WHERE number = ?");
         $query->bind("Lorem Ipsum Dolor Sit Amet Consectecture Edipsing Elit", 99);
         $query->execute();
 
-        $query = new MySQLQuery("SELECT * FROM user");
+        $query = new MySQLQuery("SELECT * FROM test_user");
         $query->execute();
         $result = $query->result();
 
@@ -135,11 +135,11 @@ final class QueryTest extends TestCase
     public function testExecutingDeleteQuery()
     {
 
-        $query = new MySQLQuery("DELETE FROM user WHERE name = ?");
+        $query = new MySQLQuery("DELETE FROM test_user WHERE name = ?");
         $query->bind("Adit");
         $query->execute();
 
-        $query = new MySQLQuery("SELECT * FROM user");
+        $query = new MySQLQuery("SELECT * FROM test_user");
         $query->execute();
 
         $array = [
@@ -159,10 +159,10 @@ final class QueryTest extends TestCase
 
         $this->assertSame($array, $query->result());
 
-        $query = new MySQLQuery("DELETE FROM user");
+        $query = new MySQLQuery("DELETE FROM test_user");
         $query->execute();
 
-        $query = new MySQLQuery("SELECT * FROM user");
+        $query = new MySQLQuery("SELECT * FROM test_user");
         $query->execute();
 
         $this->assertSame([], $query->result());

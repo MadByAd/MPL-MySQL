@@ -2,8 +2,11 @@
     <testsuites>
         <testsuite name="mysql">
             <file>tests/ConnectionTest.php</file>
+            <file>tests/CreateTableTest.php</file>
             <file>tests/QueryTest.php</file>
             <file>tests/CRUDTest.php</file>
+            <file>tests/QueryBuilderTest.php</file>
+            <file>tests/DeleteTableTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
