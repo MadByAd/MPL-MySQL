@@ -179,3 +179,332 @@ MySQLCRUD::read("user", [], [], [], [
     "orderType" => "ascending",
 ]);
 ```
+
+### Updating Data
+
+To update data you can use the method `MySQLCRUD::update(string $table, array $columns, array $columnValues, array $condition = null, array $conditionValues = null, mysqli|MySQL|null $connection = null)`. Tt takes up 6 parameters, the first is the table to have its data update, the second is the list of column to update, the third is the new values for those columns, the fourth is the condition requirement, the fifth is the values for the condition, the sixth is the mysql connection if `null` then it will use the default connection.
+
+**Example**
+
+```php
+// Update the user description who has the given name and id
+MySQLCRUD::update(
+    "user",
+    ["description = ?"],
+    [$description],
+    ["name = ?", "id = ?"],
+    [$name, $id]
+);
+```
+
+### Deleting Data
+
+To delete data you can use the method `MySQLCRUD::delete(string $table, array $condition = null, array $values = null, mysqli|MySQL|null $connection = null)`. It takes up 4 parameters, the first is the table to have its data deleted, the second is the condition for the data that will be deleted, the third is the values for the condition, the fourth is the mysql connection if `null` then it will use the default connection
+
+**Example 1**
+
+```php
+// delete a user who has the given name and id
+MySQLCRUD::delete("user", ["name = ?", "id = ?"], [$name, $id]);
+```
+
+**Example 2**
+
+```php
+// WARNING
+// if no condition is supplied this will delete all data
+MySQLCRUD::delete("user");
+```
+
+## MySQLBuilder Class
+
+The `MySQLBuilder` class allows you to build your query instead of writing mysql query. To use it require minimal knowledge of mysql query
+
+### Constructing The Class
+
+When constructing a new `MySQLBuilder(mysqli $connection = null)` class. It takes 1 optional parameter, which is the mysql connection, if no connection is supplied then it will use the default connection established by the `MySQL` class, if there is no default connection, then it will throw a `MySQLNoConnectionException`
+
+### Inserting Values
+
+To insert a value to a table it is just like the `MySQLCRUD` class, instead it use the method `queryInsert(string $table, array $columns, array $values)` and takes 3 parameters, the first is the table, the second is the columns to fill, the third is the values for the columns
+
+**Example**
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// insert a new user
+$query->queryInsert("user", ["name", "password"], [$name, $password]);
+```
+
+### Selecting Values
+
+To construct a select query you can use the method `querySelect(string $table, array $columns = [])`. It takes 2 parameter, the first is the table, the second is the column  to select
+
+***Example 1***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// select from the table user and grab all column
+$query->querySelect("user", []);
+```
+
+***Example 2***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// select from the table user and grab the name and description column
+$query->querySelect("user", ["name", "description"]);
+```
+
+#### execute()
+
+The `execute()` method will execute the constructed query
+
+***Example***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * select from the table user and grab the name and description column
+// * then executed the query
+$query->querySelect("user", ["name", "description"])
+    ->execute();
+```
+
+#### join()
+
+The `join(string $tableToJoin, array $columns = [], string $columnFromTable = "", string $columnFromJoin = "")` method is used for joining a table. It takes 4 parameters, the first is the table to join, the second is the columns from the joined table to be selected, the third is the column from the original table which will be used for comparing with the column on the joined table join, the fourth is the column from the joined table which will be used for comparing with the column on the original table join
+
+***Example***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * select from the table post
+// * join the table user
+//   based on the column owner on the post table
+//   and the column name on the user table
+// * then executed the query
+$query->querySelect("post", [])
+    ->join("user", [], "owner", "name")
+    ->execute();
+```
+
+#### condition()
+
+The `condition(array|string $conditions, array|string|int|float $values)` method is used for adding condition to the query. it takes 2 parameter, the first is the condition or the list of conditions, the second is the value / values for the condition
+
+***Example 1***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * select from the table post
+// * only select if the name and id match the given name and id
+// * then executed the query
+$query->querySelect("user", [])
+    ->condition(["name = ?", "id = ?"], [$name, $id])
+    ->execute();
+```
+
+***Example 2***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * select from the table post
+// * only select if the name match the name A or name B or Name C
+// * then executed the query
+$query->querySelect("user", [])
+    ->condition(["name = ?"], [$nameA])
+    ->condition(["name = ?"], [$nameB])
+    ->condition(["name = ?"], [$nameC])
+    ->execute();
+```
+
+***Example 3***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * select from the table post
+// * only select if the name match the given name or the given id
+// * then executed the query
+$query->querySelect("user", [])
+    ->condition(["name = ?"], [$name])
+    ->condition(["id = ?"], [$id])
+    ->execute();
+```
+
+#### limit()
+
+the `limit(int $amount)` method is used for setting the selection limit
+
+***Example***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * select from the table post
+// * only select if the name match the given name
+// * limit the selection by 10
+// * then executed the query
+$query->querySelect("user", [])
+    ->condition(["name = ?"], [$name])
+    ->limit(10);
+    ->execute();
+```
+
+#### offset()
+
+the `offset(int $amount)` method is used for setting the selection offset
+
+***Example 1***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * select from the table post
+// * only select if the name match the given name
+// * offset the selection by 10
+// * then executed the query
+$query->querySelect("user", [])
+    ->condition(["name = ?"], [$name])
+    ->offset(10);
+    ->execute();
+```
+
+***Example 2***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * select from the table post
+// * limit the selection by 10
+// * offset the selection by 10
+// * then executed the query
+$query->querySelect("user", [])
+    ->limit(10);
+    ->offset(10);
+    ->execute();
+```
+
+#### orderBy()
+
+the `orderBy(string $column, bool $ascending = true)` method is used for ordering the selection by a certain column. It takes 2 parameters, the first is the column for the selection to be ordered, and the second is whether should the order be ascending if `false` then it will be descending
+
+***Example 1***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * select from the table post
+// * order the selection by name column ascendingly A to Z
+// * then executed the query
+$query->querySelect("user", [])
+    ->orderBy("name")
+    ->execute();
+```
+
+***Example 2***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * select from the table post
+// * order the selection by name column descendingly Z to A
+// * then executed the query
+$query->querySelect("user", [])
+    ->orderBy("name", false)
+    ->execute();
+```
+
+### Updating Values
+
+To construct an update query, you can use the method `queryUpdate(string $table)`, it takes only 1 parameter and that is the table
+
+***Example***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * update the user table
+$query->queryUpdate("user");
+```
+
+#### set()
+
+the `set(string $column, array|string|int|float $value)` method is used for setting a new values for the given column. It takes 2 parameter, the first is the column to be updated, the second is the new value
+
+***Example 1***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * update the user table
+// * update the column name to be the given new name
+// * update the column picture to be the given new picture
+$query->queryUpdate("user")
+    ->set("name", $name);
+    ->set("picture", $picture);
+```
+
+#### execute()
+
+The `execute()` method will execute the constructed query
+
+***Example***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * update the user table
+// * update the column name to be the given new name
+// * update the column picture to be the given new picture
+// * then executed the query
+$query->querySelect("user")
+    ->set("name", $name);
+    ->set("picture", $picture);
+    ->execute();
+```
+
+#### condition()
+
+The `condition(array|string $conditions, array|string|int|float $values)` method can also be used for adding condition to the query. it takes 2 parameter, the first is the condition or the list of conditions, the second is the value / values for the condition
+
+***Example***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * update the user table
+// * update the column name to be the given new name
+// * update the column picture to be the given new picture
+// * update only for the user who has the given id
+// * then executed the query
+$query->querySelect("user")
+    ->set("name", $name);
+    ->set("picture", $picture);
+    ->condition(["id = ?"], $id)
+    ->execute();
+```
