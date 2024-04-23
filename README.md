@@ -3,6 +3,40 @@
 
 The MPL (MadByAd PHP Library) MySQL is a PHP library used to provide an easy interface for communicating with a mysql database. This library include a query runner to run your own written query (require an extensive knowledge of MYSQL), a query builder for easily writing querries or CRUD (stands for CREATE, READ, UPDATE, DELETE) which allows you to run the 4 basic query of mysql which is `INSERT`, `SELECT`, `UPDATE`, `DELETE` (The query builder and CRUD require minimal knowledge of mysql query)
 
+- [MPL MySQL](#mpl-mysql)
+  - [Installation](#installation)
+  - [MySQL Class](#mysql-class)
+    - [Constructing The Class](#constructing-the-class)
+    - [Establish Default Connection](#establish-default-connection)
+    - [Getting The Connection](#getting-the-connection)
+  - [MySQLQuery Class](#mysqlquery-class)
+    - [Constructing The Class](#constructing-the-class-1)
+    - [Binding Values](#binding-values)
+    - [Execute The Query](#execute-the-query)
+    - [Getting The Result](#getting-the-result)
+  - [MySQLCRUD Class](#mysqlcrud-class)
+    - [Creating Data](#creating-data)
+    - [Reading Data](#reading-data)
+    - [Updating Data](#updating-data)
+    - [Deleting Data](#deleting-data)
+  - [MySQLBuilder Class](#mysqlbuilder-class)
+    - [Constructing The Class](#constructing-the-class-2)
+    - [Inserting Values](#inserting-values)
+    - [Selecting Values](#selecting-values)
+      - [execute()](#execute)
+      - [join()](#join)
+      - [condition()](#condition)
+      - [limit()](#limit)
+      - [offset()](#offset)
+      - [orderBy()](#orderby)
+    - [Updating Values](#updating-values)
+      - [set()](#set)
+      - [execute()](#execute-1)
+      - [condition()](#condition-1)
+    - [Deleting Values](#deleting-values)
+      - [execute()](#execute-2)
+      - [condition()](#condition-2)
+
 ## Installation
 
 to install the package go ahead and open composer then write the command
@@ -13,7 +47,7 @@ composer require madbyad/mpl-mysql
 
 ## MySQL Class
 
-The `MySQL` class is class used for establishing a mysql connection
+The `MySQL` class is a class used for establishing a mysql connection
 
 ### Constructing The Class
 
@@ -53,35 +87,12 @@ The `MySQLQuery` class allows you to create a query, binds a value to the query,
 
 When constructing a new `MySQLQuery(string $query, mysqli $connection = null)` class. It takes 1 parameter and another 1 optional, the first is the query and the second is the mysql connection, if no connection is supplied then it will use the default connection established by the `MySQL` class, if there is no default connection, then it will throw a `MySQLNoConnectionException`
 
-### Binding Values
-
-To bind a values into the query, you can use the `bind(...$values)` method
-
-Why binding values though, not just insert it in the query. Well it is done like this to prevent any sql injection
-
-### Execute The Query
-
-Finally, to execute the query, you can use the `execute()` method
-
-### Getting The Result
-
-If the query is a `SELECT` query, you may want to get the result. To get the result you can use the `result()` method. This will return the selected rows in a form of an associative array
-
 **Example 1**
 
 ```php
 // prepare a new query
 // no connection is supplied so it will use the default connection
 $query = new MySQLQuery("SELECT * FROM user WHERE name LIKE ?");
-
-// bind values into the query
-$query->bind($name);
-
-// execute the query
-$query->execute();
-
-// return the result since it is a SELECT query
-$result = $query->result();
 ```
 
 **Example 2**
@@ -93,6 +104,53 @@ $mysql = new MySQL("localhost", "root", "", "my_database");
 // prepare a new query
 // use the given connection
 $query = new MySQLQuery("SELECT * FROM user WHERE name LIKE ?", $mysql);
+```
+
+### Binding Values
+
+To bind a values into the query, you can use the `bind(...$values)` method
+
+Why binding values though, not just insert it in the query. Well it is done like this to prevent any sql injection
+
+**Example**
+
+```php
+// prepare a new query
+// no connection is supplied so it will use the default connection
+$query = new MySQLQuery("SELECT * FROM user WHERE name LIKE ?");
+
+// bind values into the query
+$query->bind($name);
+```
+
+### Execute The Query
+
+Finally, to execute the query, you can use the `execute()` method
+
+**Example**
+
+```php
+// prepare a new query
+// no connection is supplied so it will use the default connection
+$query = new MySQLQuery("SELECT * FROM user WHERE name LIKE ?");
+
+// bind values into the query
+$query->bind($name);
+
+// execute the query
+$query->execute();
+```
+
+### Getting The Result
+
+If the query is a `SELECT` query, you may want to get the result. To get the result you can use the `result()` method. This will return the selected rows in a form of an associative array
+
+**Example**
+
+```php
+// prepare a new query
+// no connection is supplied so it will use the default connection
+$query = new MySQLQuery("SELECT * FROM user WHERE name LIKE ?");
 
 // bind values into the query
 $query->bind($name);
@@ -240,7 +298,7 @@ $query->queryInsert("user", ["name", "password"], [$name, $password]);
 
 ### Selecting Values
 
-To construct a select query you can use the method `querySelect(string $table, array $columns = [])`. It takes 2 parameter, the first is the table, the second is the column  to select
+To construct a select query, you can use the method `querySelect(string $table, array $columns = [])`. It takes 2 parameter, the first is the table, the second is the column  to select
 
 ***Example 1***
 
@@ -505,6 +563,54 @@ $query = new MySQLBuilder;
 $query->querySelect("user")
     ->set("name", $name);
     ->set("picture", $picture);
+    ->condition(["id = ?"], $id)
+    ->execute();
+```
+
+### Deleting Values
+
+To construct a delete query, you can use the method `delete(string $table)`. It takes 1 parameter
+
+***Example***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * delete data from the user table
+$query->queryDelete("user");
+```
+
+#### execute()
+
+The `execute()` method will execute the constructed query
+
+***Example***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * delete data from the user table
+// * then executed the query
+$query->queryDelete("user")
+    ->execute();
+```
+
+#### condition()
+
+The `condition(array|string $conditions, array|string|int|float $values)` method can also be used for adding condition to the query. it takes 2 parameter, the first is the condition or the list of conditions, the second is the value / values for the condition
+
+***Example***
+
+```php
+// construct the class
+$query = new MySQLBuilder;
+
+// * delete data from the user table
+// * only delete data that has the same id as the given id
+// * then executed the query
+$query->querySelect("user")
     ->condition(["id = ?"], $id)
     ->execute();
 ```
