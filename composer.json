@@ -3,6 +3,13 @@
     "description": "A PHP library to provide a simple interface to communicate with a mysql database",
     "type": "library",
     "license": "MIT",
+    "keywords": [
+        "Database",
+        "SQL",
+        "MySQL",
+        "Query",
+        "Query Builder"
+    ],
     "autoload": {
         "psr-4": {
             "MadByAd\\MPLMySQL\\": "src/"
